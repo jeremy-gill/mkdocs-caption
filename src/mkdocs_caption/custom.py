@@ -14,6 +14,8 @@ from mkdocs_caption.helper import (
     wrap_md_captions,
 )
 
+from mkdocs.structure.pages import Page
+
 if TYPE_CHECKING:
     from mkdocs_caption.config import IdentifierCaption
     from mkdocs_caption.logger import PluginLogger
@@ -124,6 +126,7 @@ def postprocess_html(
     tree: TreeElement,
     config: IdentifierCaption,
     logger: PluginLogger,
+    page: Page,
 ) -> None:
     """Handle custom captions in an XML tree.
 

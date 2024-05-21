@@ -35,6 +35,7 @@ class IdentifierCaption(base.Config):
         input_str: str,
         identifier: str,
         index: int | None = None,
+        chapter: int | None = None,
     ) -> str:
         """Format a string with the given identifier and index.
 
@@ -50,6 +51,7 @@ class IdentifierCaption(base.Config):
             Identifier=identifier.capitalize(),
             identifier=identifier.lower(),
             index=index,
+            chapter=chapter,
         )
 
     def get_markdown_identifier(self, identifier: str) -> str:
@@ -63,7 +65,7 @@ class IdentifierCaption(base.Config):
         """
         return self._format_string(self.markdown_identifier, identifier)
 
-    def get_caption_prefix(self, identifier: str, index: int) -> str:
+    def get_caption_prefix(self, identifier: str, index: int, chapter: int) -> str:
         """Get the caption prefix for the given identifier and index.
 
         Args:
@@ -73,7 +75,12 @@ class IdentifierCaption(base.Config):
         Returns:
             The formatted caption prefix.
         """
-        return self._format_string(self.caption_prefix, identifier, index=index)
+
+        if chapter is None:
+            caption_prefix = "Figure {index}:" ## JDG: this isn't right...
+            return self._format_string(caption_prefix, identifier, index=index)
+        else:
+            return self._format_string(self.caption_prefix, identifier, index=index, chapter=chapter)
 
     def get_reference_text(self, identifier: str, index: int) -> str:
         """Get the reference text for the given identifier and index.

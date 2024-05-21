@@ -119,9 +119,9 @@ class CaptionPlugin(BasePlugin[config.CaptionConfig]):
             tree = etree.fromstring(html, parser)
             if tree is None:
                 return html
-            table.postprocess_html(tree=tree, config=config["table"], logger=logger)
-            custom.postprocess_html(tree=tree, config=config["custom"], logger=logger)
-            image.postprocess_html(tree=tree, config=config["figure"], logger=logger)
+            table.postprocess_html(tree=tree, config=config["table"], logger=logger, page=page)
+            custom.postprocess_html(tree=tree, config=config["custom"], logger=logger, page=page)
+            image.postprocess_html(tree=tree, config=config["figure"], logger=logger, page=page)
             html_result = etree.tostring(tree, encoding="unicode", method="html")
             # HTMLParser adds <html><body> tags, remove them
             return html_result[len("<html><body>") : -len("</body></html>")]

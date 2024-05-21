@@ -13,6 +13,8 @@ from mkdocs_caption.helper import (
     wrap_md_captions,
 )
 
+from mkdocs.structure.pages import Page
+
 if TYPE_CHECKING:
     from mkdocs_caption.config import FigureCaption
     from mkdocs_caption.logger import PluginLogger
@@ -86,6 +88,7 @@ def postprocess_image(
     config: FigureCaption,
     logger: PluginLogger,
     index: int,
+    chapter: int,
     figure_attrib: dict[str, str] | None,
 ) -> None:
     """Postprocess an image element to handle custom image captions.
@@ -124,6 +127,7 @@ def postprocess_image(
     # assemble the caption element
     caption_prefix = config.get_caption_prefix(
         index=index,
+        chapter=chapter,
         identifier="figure",
     )
     try:
@@ -147,6 +151,7 @@ def postprocess_html(
     tree: TreeElement,
     config: FigureCaption,
     logger: PluginLogger,
+    page: Page,
 ) -> None:
     """Postprocess an XML tree to handle custom image captions.
 
@@ -183,6 +188,12 @@ def postprocess_html(
 
     # Iterate through all images and wrap them in a figure element if requested
     index = config.start_index
+
+    if 'chapter' in page.meta:
+        chapter = page.meta['chapter']
+    else:
+        chapter = None 
+
     for img_element in tree.xpath("//p/a/img|//p/img"):
         figure_attrib = custom_figure_attrib.get(img_element, {})
         if img_element.attrib.get("class", None) in config.ignore_classes:
@@ -202,5 +213,6 @@ def postprocess_html(
             logger=logger,
             index=index,
             figure_attrib=figure_attrib,
+            chapter=chapter,
         )
         index += config.increment_index
