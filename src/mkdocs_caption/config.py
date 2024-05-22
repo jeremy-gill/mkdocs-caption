@@ -76,7 +76,7 @@ class IdentifierCaption(base.Config):
             The formatted caption prefix.
         """
 
-        if chapter is None:
+        if chapter is None or chapter == -1:
             caption_prefix = "Figure {index}:" ## JDG: this isn't right...
             return self._format_string(caption_prefix, identifier, index=index)
         else:
