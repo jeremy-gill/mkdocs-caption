@@ -74,6 +74,7 @@ def _add_caption_to_table(
     *,
     tree: TreeElement,
     index: int,
+    chapter: int,
     config: IdentifierCaption,
     logger: PluginLogger,
 ) -> None:
@@ -90,7 +91,7 @@ def _add_caption_to_table(
         config: The plugin configuration.
         logger: Current plugin logger.
     """
-    caption_prefix = config.get_caption_prefix(index=index, identifier="table")
+    caption_prefix = config.get_caption_prefix(index=index, chapter=chapter, identifier="table")
     try:
         table_caption_element = etree.fromstring(
             str(
@@ -147,6 +148,12 @@ def postprocess_html(
     if not config.enable:
         return
     index = config.start_index
+
+    if 'chapter' in page.meta:
+        chapter = page.meta['chapter']
+    else:
+        chapter = None 
+
     for caption_info in iter_caption_elements(TABLE_CAPTION_TAG, tree):
         if caption_info.target_element.tag != "table":
             logger.error(
@@ -158,6 +165,7 @@ def postprocess_html(
             caption_info=caption_info,
             tree=tree,
             index=index,
+            chapter=chapter,
             config=config,
             logger=logger,
         )
